@@ -3,7 +3,7 @@
 I wrote a Python program with a GUI that allows users to create custom variants of chess and play them locally against humans or an AI opponent. 
 (AI was added after A-Level project so is currently not included in documentation) 
 Rationale: The future of AI research is developing general agents that can learn and perform well at multiple tasks.  In order to better understand general agents, I aimed to create an AI that could learn to play any variant of chess at a high standard.
-Users can: 
+Users can:   
 •	adjust the height, width, and shape of the board  
 •	decide how the pieces are set up  
 •	create new pieces with different movement  
