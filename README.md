@@ -43,7 +43,7 @@ Custom rulesets are not playable unless there are sufficient pieces for the win 
 ## AI  
 
 When starting a game, you will be prompted on whether to make either of the players AI.
-If you choose to do so, you will then be asked which engine depth to use (1-5). Higher engine depths play significantly better but take much longer to make a move. This varies depending on the number of pieces and size of the board (possible to moves to consider). In the interest of time, I would recommend only using higher engine depths, such as 4 or 5, on boards smaller than 8x8. The speed of play is the main aspect of the program I aim to improve. I wrote it in python for uniformity, but plan to rewrite in a language that can perform calculations faster.  
+If you choose to do so, you will then be asked which engine depth to use (1-5). Higher engine depths play significantly better (depth 4 will win BishopKnight Mate) but take much longer to make a move. This varies depending on the number of pieces and size of the board (possible to moves to consider). In the interest of time, I would recommend only using higher engine depths, such as 4 or 5, on boards smaller than 8x8. The speed of play is the main aspect of the program I aim to improve. I wrote it in python for uniformity, but plan to rewrite in a language that can perform calculations faster.  
 
 It currently works using heuristic functions that value pieces using their range of movement on the board in use (statically defined at the start of the game) and their current range of movement and pieces they can interact with (dynamically calculated at the start of each turn). Then Min Max with Alpha Beta pruning is used to review possible positions n-turns ahead (where n = engine depth) and decide the best move.
 
