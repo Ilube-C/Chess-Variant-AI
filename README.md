@@ -3,7 +3,7 @@
 ## Rationale  
 
 I wrote a Python program with a GUI that allows users to create custom variants of chess and play them locally against humans or an AI opponent. 
-(AI was added after A-Level project so is currently not included in documentation, The documentation refers to the file Mutable Chess which does not include an AI opponent, to play with AI use the current version, Mutable Chess Experimental..)  
+(AI was added after A-Level project so is currently not included in documentation, The documentation refers to the file Mutable Chess which does not include an AI opponent, to play with AI use the current version, Mutable Chess Experimental.)  
 
 Rationale: The future of AI research is developing general agents that can learn and perform well at multiple tasks.  In order to better understand general agents, I aimed to create an AI that could learn to play any variant of chess at a high standard.
 Users can:   
