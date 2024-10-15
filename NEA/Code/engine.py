@@ -231,6 +231,7 @@ class Engine:
 
         def choose_move(self, board, search_depth, turn):
                 
+                print(self.minmax_eval(board, search_depth, turn, float('-inf'), float('inf')))
                 board, move_info = self.minmax_eval(board, search_depth, turn, float('-inf'), float('inf'))
 
                 print(move_info)

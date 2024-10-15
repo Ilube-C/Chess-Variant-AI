@@ -143,9 +143,6 @@ class GameBoard:
 
     def play(self):
 
-            player = 'engin'
-            opponent = 'engin'
-
             self.create_notation()
 
             pygame.init()
@@ -198,7 +195,40 @@ class GameBoard:
             else:
                 recording = False
                 
-
+            white_depth = None
+            black_depth = None
+            
+            ans1 = input("Make white player AI?\n")
+            if ans1.lower() == 'yes':
+                player = 'engine'
+                while True:
+                            try:
+                                white_depth = int(input('engine depth(1-5):\n'))
+                                if white_depth >= 1 and white_depth <= 5:
+                                    break
+                                else:
+                                    print('Not within bounds')
+                            except:
+                                print('invalid input')  
+                
+            else:
+                player = 'human'
+                
+            ans2 = input("Make black player AI?\n")
+            if ans2.lower() == 'yes':
+                opponent = 'engine'
+                while True:
+                            try:
+                                black_depth = int(input('engine depth(1-5):\n'))
+                                if black_depth >= 1 and black_depth <= 5:
+                                    break
+                                else:
+                                    print('Not within bounds')
+                            except:
+                                print('invalid input')  
+            else:
+                opponent = 'human'
+            
 # play draw board
 
             printed_moves = False
@@ -229,40 +259,49 @@ class GameBoard:
                                 #the king of the hill win condition requires the hill squares to be passed as well as the normal variables
                         else:
                                 end = self.wincon(self.board, self.w, self.h, turn, check)
-
-                        previous_positions, double_previous_positions, end = threefold_check(self.board, previous_positions, double_previous_positions)
-                        print(end)
+                                #print(self.wincon(self.board, self.w, self.h, turn, check))
+                                
+                if not end:
+                    previous_positions, double_previous_positions, end = threefold_check(self.board, previous_positions, double_previous_positions)
+                        #print("end in win condition section is {}".format(end))
                         #print(previous_positions, double_previous_positions)
                 
 
 #quit events
                 pygame.display.update()
-                test_eng = engine.Engine(self.board, pieces)
+                if not end:
+                    test_eng = engine.Engine(self.board, pieces)
 
-                print(test_eng.evaluate(self.board))
+                #print(test_eng.evaluate(self.board))
                 #print(self.board)
                 #print(test_eng.generate_moves(self.board, turn))
                 
-
+                #print(turn)
                 if (turn == 1 and player == 'engine') or (turn == 2 and opponent == 'engine'):
-
+                        
+                        depth = [white_depth, black_depth]
+                    
                         pygame.event.pump()
                         
                         #print('value of end is {}'.format(end)) 
                         print(end)
+                        #print("======================\nGAME ENDS HERE\n==================\nWHY IS IT CRASHING\n===============================")
                         if end == True:
                                 if recording:
                                         print(log)
-                                        test_eng.save_game()
+                                        #test_eng.save_game()
+                                        #print("======================\nGAME ENDS HERE\n==================\nWHY IS IT CRASHING\n===============================")
                                         recording = False
                                 while True:
-                                        for event in pygame.event.get():
-                                                if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:
-                                                    pygame.display.quit() 
-                                                    return
+                                    for event in pygame.event.get():
+                                        if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:
+                                            pygame.display.quit() 
+                                                    
+                                            return
                         else:
-                                        
-                                self.board = test_eng.choose_move(self.board, 3, turn)
+                                
+                                if not end:
+                                    self.board = test_eng.choose_move(self.board, depth[turn-1], turn) #depth
                                 click.play()
                                 #print(self.board)
 
@@ -1229,7 +1268,7 @@ if __name__ == '__main__':
             #quit option
             elif choice.lower() == 'help':
             #help menu
-                print('\n\nNaviagting the program:\nWhen given items listed numerically, type in the number of the item you wish to select\nWhen asked a binary question type \'yes\' to confirm or enter enything else to deny\n')
+                print('\n\nNaviagting the program:\nWhen given items listed numerically, type in the number of the item you wish to select\nWhen asked a binary question type \'yes\' to confirm or enter anything else to deny\n')
                 print('Pieces:')
                 print('Piece movement is represented by 2-dimensional vectors. These can be interpreted in two ways:\n1:As a leaping vector, in which case the piece can move once by that vector in all directions\n2:As a riding vector, in which case the piece can move infinitely by that vector until it is blocked.\n(so a knight is a [1,2] leaper and a bishop is a [1,1] rider')
                 print('A piece\'s status can either be common or royal. The properties of royal pieces are dependent on the game\'s win condition\n')
@@ -1319,6 +1358,7 @@ if __name__ == '__main__':
                 
             agents = [4,'P','R','N','B','K','Q','p','r','n','b','k','q']
             
+            print(len(sprites))
             while len(sprites) > 0:
                 ans = input('Would you like to make a new piece?({} more possible):\n'.format(len(sprites)))
                 #the user is asked to make a custom piece up to 3 times
@@ -1356,6 +1396,7 @@ if __name__ == '__main__':
                                 sprite = sprites[choice-1]
                                 #print(sprite)
                                 sprites.remove(sprite)
+                                print(len(sprites))
 
                         vec_ride = []
                         vec_leap = []
@@ -1473,9 +1514,7 @@ if __name__ == '__main__':
                         ChessBoard = TempBoard
 
                 elif ans == 2:
-
-                
-                        while True:
+                    while True:
                             try:
                                 w = int(input('Width of the board(2-26):\n'))
                                 if w < 27 and w > 1:
@@ -1483,9 +1522,9 @@ if __name__ == '__main__':
                                 else:
                                     print('Not within bounds')
                             except:
-                                print('invalid input') 
+                                print('invalid input')  
                                     
-                        while True:
+                    while True:
                             try:
                                 h = int(input('Height of the board(2-26):\n'))
                                 if h < 27 and h > 1:
@@ -1495,35 +1534,35 @@ if __name__ == '__main__':
                             except:
                                 print('invalid input')
 
-                        board = [[1] * w for i in range(h)] 
+                    board = [[1] * w for i in range(h)] 
                         #board generated with user's height and width
 
-                        extra_h = extra_row_count(w, 1, agents)
+                    extra_h = extra_row_count(w, 1, agents)
                         
                         
-                        auxiliary_1 = [[2] * w]
+                    auxiliary_1 = [[2] * w]
                         #represents separation row
-                        auxiliary_1[0][round(w/2)] = 3
+                    auxiliary_1[0][round(w/2)] = 3
                         #tick button is placed in the middle of the separation row
-                        auxiliary_2 = [[1] * w for i in range(extra_h)]
+                    auxiliary_2 = [[1] * w for i in range(extra_h)]
                         #space for the board design tools is added
-                        auxiliary = auxiliary_1+auxiliary_2
+                    auxiliary = auxiliary_1+auxiliary_2
                         #the two are combined
                         
-                        counter = 0
-                        for i in range(len(agents)):
-                            if i % w == 0:
-                                counter += 1
-                            auxiliary[counter][i%w] = agents[i]
+                    counter = 0
+                    for i in range(len(agents)):
+                        if i % w == 0:
+                            counter += 1
+                        auxiliary[counter][i%w] = agents[i]
                         #populated with pieces
 
-                        for i in auxiliary:
-                            board.append(i)
+                    for i in auxiliary:
+                        board.append(i)
                         #adds auxiliaries to board
                         
-                        TempBoard = CustomGameBoard(agents, fairies, board, w, h, win_condition)
+                    TempBoard = CustomGameBoard(agents, fairies, board, w, h, win_condition)
                         
-                        ChessBoard = TempBoard
+                    ChessBoard = TempBoard
                 
                         
 
