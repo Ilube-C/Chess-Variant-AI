@@ -1,0 +1,27 @@
+improving chess engine
+
+tests:
+
+necessary:
+lawnmower mate
+king and queen mate
+pawn race
+
+extra:
+king and rook mate
+apposition
+dual bishop and king mate
+3 knight and king mate?
+
+genetic algorithm:
+choose a relatively simple game mode
+design automatic tournament format
+decide range for each external factor
+think about adding multiplier to base piece value
+initialise x engines within random range
+enter them in tournament
+take winner
+add tiny random modifiers to winner x times
+enter them in tournament
+repeat y times
+play against output
