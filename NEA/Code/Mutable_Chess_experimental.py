@@ -268,7 +268,7 @@ class GameBoard:
                 
 
 #quit events
-                pygame.display.update()
+                #pygame.display.update()
                 if not end:
                     test_eng = engine.Engine(self.board, pieces)
 
@@ -320,10 +320,25 @@ class GameBoard:
                                 pygame.display.update()
                 else:
                         loop = True
+                        #self.draw_board(squaresize, self.w, self.h)
+                        #clock = pygame.time.Clock()
+                        redraw = True
                         while loop:
-                                self.draw_board(squaresize, self.w, self.h)
+                                #clock.tick(120)
+                                if redraw:
+                                    self.draw_board(squaresize, self.w, self.h)
+                                    if show_moves:
+                                            
+                                    #if the last event was a piece being clicked, this statement displays all its legal moves 
+                                        for i in legal_moves:
+                                            coords = algebra_to_vector(i)
+                                            screen.blit(image, (coords[0]*squaresize+round(squaresize/4), coords[1]*squaresize+round(squaresize/4)))
+                                            #moves are represented by a red dot
+                                            #pygame.display.update()
+                                    pygame.display.update()
+                                    redraw = False
                                 for event in pygame.event.get():
-                                    #print('hello')    
+                                    #pygame.display.update()    
                                     if end == True:
                                         if recording:
                                                 print(log)
@@ -344,17 +359,18 @@ class GameBoard:
                                             loop = False
                                             return
 
-                                    pygame.display.update()
+                                    #pygame.display.update()
+                                    
                                 
                 #show moves
-                                    if show_moves:
+                                    """      if show_moves:
                                             
                                     #if the last event was a piece being clicked, this statement displays all its legal moves 
                                         for i in legal_moves:
                                             coords = algebra_to_vector(i)
                                             screen.blit(image, (coords[0]*squaresize+round(squaresize/4), coords[1]*squaresize+round(squaresize/4)))
                                             #moves are represented by a red dot
-                                            pygame.display.update()
+                                            #pygame.display.update()"""
 
                 #mouse clicks
                                     if event.type == pygame.MOUSEBUTTONDOWN:
@@ -386,6 +402,7 @@ class GameBoard:
                                                 legal_moves = []
                                                 #a move is made
                                                 printed_moves = False
+                                                redraw = True
 
                                                 
                 #updates game info
@@ -395,7 +412,7 @@ class GameBoard:
                                                 check = checkifcheck(self.board, turn, self.w, self.h)
                                                 #moves onto next turn
                                                 turn = next_turn(turn) 
-                                                pygame.display.update()
+                                                #pygame.display.update()
                                                 loop = False
 
                                                 #if the user requested to record the game, logs the move that has just occurred
@@ -414,7 +431,7 @@ class GameBoard:
                                                 legal_moves = []
                                                 #lets go of the piece that was touched last event
                                                 touched = False
-                                                pygame.display.update()
+                                                #pygame.display.update()
                                                 
                 #if a piece hasn't been selected
                                         else:
@@ -439,10 +456,12 @@ class GameBoard:
                                                         screen = pygame.display.set_mode(size)
 
                                                         show_moves = True
+                                                        redraw = True
 
                                             #if an enemy piece is clicked
                                             else:
-                                                print('enemy piece\n')    
+                                                print('enemy piece\n')
+                                #pygame.display.update()
 
 
 #custom board class
