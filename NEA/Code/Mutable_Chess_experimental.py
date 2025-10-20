@@ -24,7 +24,10 @@ ctypes.windll.user32.SetProcessDPIAware() #for getting the size of the user's mo
 
 #sound effect
 pygame.mixer.init()
-click = pygame.mixer.Sound(file = 'click.wav')
+# Get the directory where this script is located
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+click = pygame.mixer.Sound(file = os.path.join(script_dir, 'click.wav'))
 
 #colours
 
@@ -104,12 +107,15 @@ class GameBoard:
 
 #draw board
     def draw_board(self, squaresize, w, h):
-                
+
         width = w * squaresize
         height = h * squaresize
 
         size = (width, height)
-        screen = pygame.display.set_mode(size)
+        # Only set mode if screen doesn't exist or size changed
+        if not hasattr(self, '_screen') or self._screen is None or self._screen.get_size() != size:
+            self._screen = pygame.display.set_mode(size)
+        screen = self._screen
 
         i = 1
 
@@ -278,12 +284,13 @@ class GameBoard:
                 
                 #print(turn)
                 if (turn == 1 and player == 'engine') or (turn == 2 and opponent == 'engine'):
-                        
+
                         depth = [white_depth, black_depth]
-                    
+
                         pygame.event.pump()
-                        
-                        #print('value of end is {}'.format(end)) 
+                        pygame.display.update()
+
+                        #print('value of end is {}'.format(end))
                         print(end)
                         #print("======================\nGAME ENDS HERE\n==================\nWHY IS IT CRASHING\n===============================")
                         if end == True:
@@ -491,14 +498,17 @@ class CustomGameBoard(GameBoard): #Class used to create user customised game boa
 
 #custom draw board function
     #function to draw board with pygame graphics
-    def draw_board(self, squaresize, w, h): #different squaresize for design and play 
+    def draw_board(self, squaresize, w, h): #different squaresize for design and play
                                             #width and heigh must be specified becuase different values are used for design and play
-    
+
         width = w * squaresize
         height = h * squaresize
 
         size = (width, height)
-        screen = pygame.display.set_mode(size)
+        # Only set mode if screen doesn't exist or size changed
+        if not hasattr(self, '_screen') or self._screen is None or self._screen.get_size() != size:
+            self._screen = pygame.display.set_mode(size)
+        screen = self._screen
 
         i = 1
 
@@ -567,75 +577,79 @@ class CustomGameBoard(GameBoard): #Class used to create user customised game boa
 
         piece = False
         #whether a piece is held
-        
+
+        redraw = True
+        #flag to control when screen needs updating
+
         while True:
-                
 
-                playable = False
-                #is the gamemode playable yet
+#event loop
+                if redraw:
+                    playable = False
+                    #is the gamemode playable yet
 
-                white = False
-                #are there white pieces
+                    white = False
+                    #are there white pieces
 
-                black = False
-                #are there black pieces
-                
-                white_royal = False
-                #are there royal white pieces
+                    black = False
+                    #are there black pieces
 
-                black_royal = False
-                #are there royal black pieces
+                    white_royal = False
+                    #are there royal white pieces
 
-                hill = False
-                #are there any hill squares
+                    black_royal = False
+                    #are there royal black pieces
+
+                    hill = False
+                    #are there any hill squares
 
 #checks playability
-                for y in range(self.h):
-                    for x in range(self.w):
-                        if type(self.board[y][x]) == str and self.board[y][x].isupper():
-                            white = True
-                            if pieces[self.board[y][x]][1].getStatus() == 'royal':
-                                white_royal = True
-                #checks board for white pieces
-                        
-                for y in range(self.h):
-                    for x in range(self.w):
-                        if type(self.board[y][x]) == str and self.board[y][x].islower():
-                            black = True
-                            if pieces[self.board[y][x]][1].getStatus() == 'royal':
-                                    black_royal = True
-                #checks board for black pieces
+                    for y in range(self.h):
+                        for x in range(self.w):
+                            if type(self.board[y][x]) == str and self.board[y][x].isupper():
+                                white = True
+                                if pieces[self.board[y][x]][1].getStatus() == 'royal':
+                                    white_royal = True
+                    #checks board for white pieces
 
-                for y in range(self.h):
-                    for x in range(self.w):
-                        if self.board[y][x] == 5:
-                                    hill = True
-                #checks if the user has set any hills
+                    for y in range(self.h):
+                        for x in range(self.w):
+                            if type(self.board[y][x]) == str and self.board[y][x].islower():
+                                black = True
+                                if pieces[self.board[y][x]][1].getStatus() == 'royal':
+                                        black_royal = True
+                    #checks board for black pieces
 
-                if self.wincon == extinction:
-                    if white and black:
-                        playable = True
-                
-                        
-                if self.wincon == checkmate or self.wincon == regicide:
-                    if white_royal and black_royal:
-                                playable = True
+                    for y in range(self.h):
+                        for x in range(self.w):
+                            if self.board[y][x] == 5:
+                                        hill = True
+                    #checks if the user has set any hills
 
-                if self.wincon == KotH:
-                    if white_royal and black_royal and hill:
-                                playable = True
-                #checks if the game is playable, different for each win condition
+                    if self.wincon == extinction:
+                        if white and black:
+                            playable = True
 
-                for y in range(self.h):
-                    for x in range(self.w):
-                        if type(self.board[y][x]) == str and pieces[self.board[y][x]][1].getStatus() == 'royal':
-                                if checkifcheck(self.board[:self.h], 1, self.w, self.h) or checkifcheck(self.board[:self.h], 2, self.w, self.h):
-                                        playable = False
-                #if a piece starts in check the board state is not playable
 
-#event loop                
-                self.draw_board(squaresize, self.w, self.h+extra_h+1)
+                    if self.wincon == checkmate or self.wincon == regicide:
+                        if white_royal and black_royal:
+                                    playable = True
 
+                    if self.wincon == KotH:
+                        if white_royal and black_royal and hill:
+                                    playable = True
+                    #checks if the game is playable, different for each win condition
+
+                    for y in range(self.h):
+                        for x in range(self.w):
+                            if type(self.board[y][x]) == str and pieces[self.board[y][x]][1].getStatus() == 'royal':
+                                    if checkifcheck(self.board[:self.h], 1, self.w, self.h) or checkifcheck(self.board[:self.h], 2, self.w, self.h):
+                                            playable = False
+                    #if a piece starts in check the board state is not playable
+
+                    self.draw_board(squaresize, self.w, self.h+extra_h+1)
+                    pygame.display.update()
+                    redraw = False
 
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -643,59 +657,56 @@ class CustomGameBoard(GameBoard): #Class used to create user customised game boa
                         self.board = []
                         #if the user quits, the board isn't defined
                         return
-                        
-                    pygame.display.update()
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    x, y = event.pos
-                    column = int(math.floor(x/squaresize))
-                    row = int(math.floor(y/squaresize))
-                    coords = column, row
-                    pos = vector_to_algebra(coords)
-                    
-                    choice = board[row][column]
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        x, y = event.pos
+                        column = int(math.floor(x/squaresize))
+                        row = int(math.floor(y/squaresize))
+                        coords = column, row
+                        pos = vector_to_algebra(coords)
 
-                    if choice in self.agents:
-                    #if a board object has been chosen
-                        if row > self.h:
-                        #if the chosen object is below the separation line (in the creative tools)
-                            piece = choice
-                            #turns the held piece to that object
-                        else:
-                        #if its above
-                            self.board[row][column] = 1
-                            #removes the object
+                        choice = board[row][column]
 
-                    elif choice == 1:
-                    #if an empty square is chosen
-                        if piece and row < self.h:
-                        #if a piece has been selected and the square chosen is on the board
-                            self.board[row][column] = piece
-                            #places piece there
+                        if choice in self.agents:
+                        #if a board object has been chosen
+                            if row > self.h:
+                            #if the chosen object is below the separation line (in the creative tools)
+                                piece = choice
+                                #turns the held piece to that object
+                            else:
+                            #if its above
+                                self.board[row][column] = 1
+                                #removes the object
+                                redraw = True
 
-                    elif choice == 2:
-                        pass
-                    #if an empty square is clicked, does nothing
+                        elif choice == 1:
+                        #if an empty square is chosen
+                            if piece and row < self.h:
+                            #if a piece has been selected and the square chosen is on the board
+                                self.board[row][column] = piece
+                                #places piece there
+                                redraw = True
 
-                    elif choice == 3:
-                    #if the tick button was pressed
-                        if playable:
-                            for y in range(self.h):
-                                for x in range(self.w):
-                                    if self.board[y][x] == 5:
-                                        self.board[y][x] = 1
-                                        self.hills.append((y, x))
-                                        #iterates through board and adds any hills found to the hills array
-                            self.board = self.board[:self.h]
-                            #sets the game board to be just the board component of the creation board.
-                            pygame.display.quit()
-                            return
+                        elif choice == 2:
+                            pass
+                        #if an empty square is clicked, does nothing
 
-                        else:
-                                print('not playable') 
-                                
+                        elif choice == 3:
+                        #if the tick button was pressed
+                            if playable:
+                                for y in range(self.h):
+                                    for x in range(self.w):
+                                        if self.board[y][x] == 5:
+                                            self.board[y][x] = 1
+                                            self.hills.append((y, x))
+                                            #iterates through board and adds any hills found to the hills array
+                                self.board = self.board[:self.h]
+                                #sets the game board to be just the board component of the creation board.
+                                pygame.display.quit()
+                                return
 
-                pygame.display.update
+                            else:
+                                    print('not playable')
 
 #default board
 
