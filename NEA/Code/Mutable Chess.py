@@ -160,7 +160,7 @@ class GameBoard:
             while True:
 
                 self.draw_board(squaresize, self.w, self.h)
-                
+
 #win condition
                 if not end: #once the game has ended, stops checking for win
                         if self.wincon == KotH:
@@ -168,25 +168,23 @@ class GameBoard:
                                 #the king of the hill win condition requires the hill squares to be passed as well as the normal variables
                         else:
                                 end = self.wincon(self.board, self.w, self.h, turn, check)
-                
 
-#quit events                                                       
+
+#quit events
                 for event in pygame.event.get():
                     if end == True:
                         if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:
-                            pygame.display.quit() 
+                            pygame.display.quit()
                             return
-                    
+
                     if event.type == pygame.QUIT:
-                        pygame.display.quit() 
+                        pygame.display.quit()
                         return
 
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_ESCAPE:
-                            pygame.display.quit() 
+                            pygame.display.quit()
                             return
-
-                    pygame.display.update()
 
 #show moves
                     if show_moves:
@@ -275,7 +273,9 @@ class GameBoard:
 
                             #if an enemy piece is clicked
                             else:
-                                print('enemy piece\n')    
+                                print('enemy piece\n')
+
+                pygame.display.update()
 
 
 #custom board class
